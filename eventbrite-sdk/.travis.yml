@@ -1,0 +1,11 @@
+language: php
+php:
+- '5.4'
+- '5.5'
+- '5.6'
+- '7.0'
+- '7.1'
+- hhvm
+env:
+  matrix:
+    secure: zAQJKBKt5ecnq8v/8SSQHPpyodRMoOA7vLj5TseASNIpgQCmuRgkY4fbAR80liNIN6mkWx3LP9Xb23ldeAbmUwOqikMYuEPhXsQ9Wo3Fo8+6xO2rzL1M3KTXnGGqyARW1Qa4oED+HySnxo9wFoVfz265xYveApeIoZS2Ryr7FPNybtst2WLMY1VRfra/GHHn4RjbXh46xl0AAlCv2Cs1Q/fCPEmCexdYaPNJ5yZ10o5bgNWKNJ0GfL8MeGuN97JA3jm/QmafF2b/FHkGu7WdvkY7cX55QeglAbEEnLJ6EuVzY9NFtJEL39L4MwAdOafM1l9LjaX6yhsuem9hqoUll41NXad5oGi/oC9jwsis0alKdjNdg1n2YNnRdljnkzvsmzu7JvFnhiQQobsQTtIuqO19ke7xhbl3PCw1eQK0F5tCtQm1HzJNgjk7DRLphNFbys1RJ9EPePqZg6BoMirK75yqLZk29qzpiQvpUf9MXb0p3AbjutsCWvp65c0mOKDax0O+TCxZHFIy/Q6xiiM1EUy4wsleJBLpyu5yGiFSrQzDqKd2mIX9uxCcsqEg/xHuKvb9oR0ti+j4qpO3Rr4mjuocVRrVN5n2x/RlylNNqoJPK/POwoYgElEmBQhu3cJ5oFqJAmjqrcY4ckkUdfjtYcYVrVvhpgs36jMgbO5yrks=
