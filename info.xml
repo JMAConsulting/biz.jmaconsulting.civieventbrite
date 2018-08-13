@@ -2,7 +2,7 @@
 <extension key="biz.jmaconsulting.civieventbrite" type="module">
   <file>civieventbrite</file>
   <name>EventBrite to CiviCRM Migration</name>
-  <description>This extension migrates events from EventBrite to CiviCRM.</description>
+  <description>This extension migrates attendees as contacts from EventBrite to CiviCRM.</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>JMA</author>

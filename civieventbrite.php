@@ -1,5 +1,5 @@
 <?php
-require_once 'eventbrite-sdk-php/HttpClient.php';
+require_once 'eventbrite-sdk/HttpClient.php';
 require_once 'civieventbrite.civix.php';
 
 /**
