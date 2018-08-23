@@ -27,7 +27,8 @@ class CRM_EB_Form_Import extends CRM_Core_Form {
    */
   public function buildQuickForm() {
     $fields = [
-      'contacts' => ts('EventBrite Attendees as Contacts'),
+      'contacts' => ts('EventBrite Attendees'),
+      'lists' => ts('EventBrite Contact Lists'),
     ];
     foreach ($fields as $field => $title) {
       $this->addElement('checkbox', $field, $title);
@@ -70,6 +71,7 @@ class CRM_EB_Form_Import extends CRM_Core_Form {
   public static function getRunner($submitValues) {
     $syncProcess = array(
       'contacts' => 'syncEventBriteContacts',
+      'lists' => 'syncEventBriteLists',
     );
     // Setup the Queue
     $queue = CRM_Queue_Service::singleton()->create(array(
@@ -111,8 +113,26 @@ class CRM_EB_Form_Import extends CRM_Core_Form {
     return CRM_Queue_Task::TASK_SUCCESS;
   }
 
+  public static function syncEventBriteLists(CRM_Queue_TaskContext $ctx) {
+    $lists = CRM_EB_BAO_EventBrite::syncLists($ctx);
+    foreach ($lists as $listId => $list) {
+      $name = $list['name'];
+      $ctx->queue->createItem( new CRM_Queue_Task(
+        array('CRM_EB_Form_Import', 'createUpdateContactList'),
+        [$listId, $name],
+        "Adding contacts from EventBrite - $name to CiviCRM... "
+      ));
+    }
+    return CRM_Queue_Task::TASK_SUCCESS;
+  }
+
   public static function createUpdateContacts(CRM_Queue_TaskContext $ctx, $eventId) {
     CRM_EB_BAO_EventBrite::syncContacts($ctx, $eventId);
+    return CRM_Queue_Task::TASK_SUCCESS;
+  }
+
+  public static function createUpdateContactList(CRM_Queue_TaskContext $ctx, $listId, $group) {
+    CRM_EB_BAO_EventBrite::syncContactLists($ctx, $listId, $group);
     return CRM_Queue_Task::TASK_SUCCESS;
   }
 
