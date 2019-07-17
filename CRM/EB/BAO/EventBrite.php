@@ -3,7 +3,7 @@
 class CRM_EB_BAO_EventBrite extends CRM_Mailchimp_Sync {
 
   public static function getResponse($op, $params) {
-    $client = new HttpClient('DN5JGJ45R2GDT3JN37EC');
+    $client = new HttpClient('T6LJKMDUDVPMIQEJ7HCB');
     if ($op == "syncEvents") {
       $eventIds = [];
       // Get organizers for the current user.
@@ -49,8 +49,11 @@ class CRM_EB_BAO_EventBrite extends CRM_Mailchimp_Sync {
           foreach ($multipleAttendeeGroups as $group) {
             foreach ($group['attendees'] as $attendee) {
               if (strpos($attendee['id'], '-') == false) {
-                $id = self::createAttendee($attendee['profile']);
-                self::createAnswers($id, $attendee['answers']);
+                $created = date('Y-m-d', strtotime($attendee['created']));
+                if ($created > "2019-04-01") {
+                  $id = self::createAttendee($attendee['profile']);
+                }
+                //self::createAnswers($id, $attendee['answers']);
               }
             }
           }
@@ -59,8 +62,11 @@ class CRM_EB_BAO_EventBrite extends CRM_Mailchimp_Sync {
       else {
         foreach ($attendees['attendees'] as $attendee) {
           if (strpos($attendee['id'], '-') == false) {
-            $id = self::createAttendee($attendee['profile']);
-            self::createAnswers($id, $attendee['answers']);
+            $created = date('Y-m-d', strtotime($attendee['created']));
+            if ($created > "2019-04-01") {
+              $id = self::createAttendee($attendee['profile']);
+            }
+            //self::createAnswers($id, $attendee['answers']);
           }
         }
       }
@@ -164,6 +170,7 @@ class CRM_EB_BAO_EventBrite extends CRM_Mailchimp_Sync {
       'last_time' => $contact['last_name'],
       'email' => $contact['email'],
     ];
+    $params = array_filter($params);
     $dedupeParams = CRM_Dedupe_Finder::formatParams($params, 'Individual');
     $dedupeParams['check_permission'] = FALSE;
     $dupes = CRM_Dedupe_Finder::dupesByParams($dedupeParams, 'Individual');
@@ -216,6 +223,12 @@ class CRM_EB_BAO_EventBrite extends CRM_Mailchimp_Sync {
     }
     try {
       $contact = civicrm_api3('Contact', 'create', $params);
+      // Create April tag
+      civicrm_api3('EntityTag', 'create', [
+        'entity_id' => $contact['id'],
+        'entity_table' => "civicrm_contact",
+        'tag_id' => "April 1st 2019",
+      ]);
 
       // Add phone if present.
       if (!empty($attendee['home_phone'])) {
@@ -249,7 +262,7 @@ class CRM_EB_BAO_EventBrite extends CRM_Mailchimp_Sync {
           if (!empty($address['country'])) {
             $addressParams['country'] = CRM_Core_DAO::singleValueQuery("SELECT max(id) from civicrm_country where iso_code = '{$address['country']}'");
           }
-          if (!empty($address['country']) && !empty($address['region'])) {
+          if (!empty($addressParams['country']) && !empty($address['region'])) {
             $state = CRM_Core_DAO::singleValueQuery("SELECT max(id) from civicrm_state_province where abbreviation = '{$address['region']}' AND country_id = {$addressParams['country']}");
           }
           if ($state) {
