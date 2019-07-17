@@ -3,7 +3,7 @@
 class CRM_EB_BAO_EventBrite extends CRM_Mailchimp_Sync {
 
   public static function getResponse($op, $params) {
-    $client = new HttpClient('T6LJKMDUDVPMIQEJ7HCB');
+    $client = new HttpClient('API TOKEN HERE');
     if ($op == "syncEvents") {
       $eventIds = [];
       // Get organizers for the current user.
